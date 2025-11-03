@@ -1,5 +1,6 @@
 # インターネット時報
 
+ ## © 2023 AZO — Licensed under the MIT License.  Modified and published by Nosuke.
 ![GitHub Tag](https://img.shields.io/github/v/tag/AZO234/timesignal)
 ![workflow](https://github.com/AZO234/timesignal/actions/workflows/main.yml/badge.svg)
 
