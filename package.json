@@ -1,0 +1,21 @@
+{
+  "name": "timesignal",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "keywords": [
+    "audio",
+    "sound",
+    "timesignal",
+    "web"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.2.6"
+  }
+}
