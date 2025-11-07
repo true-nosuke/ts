@@ -15,6 +15,7 @@ export interface timesignalOptions {
   nVoice: number;  // 0：Google、1：ゆっくり、2：ずんだもん
 	nVolume: number;  // 音量 0〜100
 	nInterval: number;  // インターバル（ms） 10ms付近推奨
+  useLocalClock?: boolean; // ローカル(OS)時計を使用（既定: false=ネットワーク補正）
 }
 
 // コールバック関数の型
@@ -58,8 +59,8 @@ export default class Timesignal {
 
 	// インターバル
 	private _interval() {
-		// 補正済み時刻を取得
-		const date = this._getjst.getDate()
+		// 補正済み時刻を取得（ローカル/ネットワーク 切替）
+		const date = this._options.useLocalClock ? new Date() : this._getjst.getDate()
     let mstime = date.getTime();
 		if(this._options.bSummerTime) {
 			const m = date.getMonth()
@@ -169,7 +170,8 @@ export default class Timesignal {
 		bStop: false,
 		nVoice: 0,
 		nVolume: 100,
-		nInterval: 9
+		nInterval: 9,
+		useLocalClock: false
 	};
 	private _voiceSets: TimesignalVoiceSet[] = [
 		new tsvGoogle(),

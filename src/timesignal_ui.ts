@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const rdoGoogle = <HTMLInputElement>document.getElementById('rdoGoogle');
   const rdoYukkuri = <HTMLInputElement>document.getElementById('rdoYukkuri');
   const rdoZunda = <HTMLInputElement>document.getElementById('rdoZunda');
+	const chkLocalClock = <HTMLInputElement>document.getElementById('chkLocalClock');
 
 	const edtDisplayTime = <HTMLInputElement>document.getElementById('display_time');
   const divAudios = <HTMLDivElement>document.getElementById('audios');
@@ -26,7 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		bStop: false,
 		nVoice: 0,
 		nVolume: 100,
-		nInterval: 9
+		nInterval: 9,
+		useLocalClock: false
 	};
 	const param = new Map();
 	const pair = location.search.substring(1).split('&');
@@ -59,6 +61,19 @@ document.addEventListener('DOMContentLoaded', function () {
       rdoGoogle.checked = true;
       break;
   }
+
+	// 時計ソース（src=local|net）
+	const src = (param.get("src") || '').toLowerCase();
+	if(src === 'local') {
+		options.useLocalClock = true;
+		if(chkLocalClock) chkLocalClock.checked = true;
+	} else if(src === 'net') {
+		options.useLocalClock = false;
+		if(chkLocalClock) chkLocalClock.checked = false;
+	} else {
+		// 既定: ネットワーク補正（チェックなし）
+		if(chkLocalClock) chkLocalClock.checked = false;
+	}
 	let volume = Number(param.get("vol"));
 	if(isNaN(volume)) {
 		volume = 100;
@@ -112,6 +127,14 @@ document.addEventListener('DOMContentLoaded', function () {
 			timesignal.options = options;
 		}
   });
+	if(chkLocalClock) {
+		chkLocalClock.addEventListener('click', function () {
+			options.useLocalClock = chkLocalClock.checked;
+			if(timesignal) {
+				timesignal.options = options;
+			}
+		});
+	}
 	rngVolume.addEventListener('change', function() {
 		txtVolume.value = rngVolume.value;
 		options.nVolume = Number(rngVolume.value);
