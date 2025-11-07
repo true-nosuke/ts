@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	const edtDisplayTime = <HTMLInputElement>document.getElementById('display_time');
   const divAudios = <HTMLDivElement>document.getElementById('audios');
+	const hourHand = <HTMLDivElement>document.getElementById('hourHand');
+	const minuteHand = <HTMLDivElement>document.getElementById('minuteHand');
+	const secondHand = <HTMLDivElement>document.getElementById('secondHand');
 
   // パラメータ＆初期設定
 	const options: timesignalOptions = {
@@ -123,7 +126,27 @@ document.addEventListener('DOMContentLoaded', function () {
 	// インターネット時報 初期化
   timesignal = new Timesignal(divAudios, options, (strTime) => {
 		edtDisplayTime.value = strTime;
+		// アナログ時計の針を更新
+		updateAnalogClock();
 	});
+
+	// アナログ時計更新関数
+	function updateAnalogClock() {
+		const now = new Date();
+		const hours = now.getHours() % 12;
+		const minutes = now.getMinutes();
+		const seconds = now.getSeconds();
+		const milliseconds = now.getMilliseconds();
+
+		// 各針の角度を計算（滑らかな動き）
+		const secondDeg = ((seconds + milliseconds / 1000) * 6); // 360 / 60
+		const minuteDeg = ((minutes + seconds / 60) * 6); // 360 / 60
+		const hourDeg = ((hours + minutes / 60) * 30); // 360 / 12
+
+		if(secondHand) secondHand.style.transform = `rotate(${secondDeg}deg)`;
+		if(minuteHand) minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+		if(hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+	}
 
 	// イベントリスナ
   chk24Hour.addEventListener('click', function () {

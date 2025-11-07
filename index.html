@@ -192,6 +192,86 @@
     body.dark-mode .mute-off { background-color: #1b3b1d; color: #a5d6a7; border-color: #2e7d32; }
     body.red-dark-mode .mute-on { background-color: #2a0000; color: #ff8080; border-color: #7f0000; }
     body.red-dark-mode .mute-off { background-color: #160000; color: #ffb3b3; border-color: #330000; }
+
+    /* アナログ時計 */
+    .analog-clock {
+      width: 200px;
+      height: 200px;
+      border: 8px solid #333;
+      border-radius: 50%;
+      position: relative;
+      margin: 20px auto;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 0 0 30px rgba(0,0,0,0.1);
+    }
+    body.dark-mode .analog-clock {
+      background: #2a2a2a;
+      border-color: #555;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 0 30px rgba(0,0,0,0.3);
+    }
+    body.red-dark-mode .analog-clock {
+      background: #1a0000;
+      border-color: #660000;
+      box-shadow: 0 4px 10px rgba(100,0,0,0.5), inset 0 0 30px rgba(100,0,0,0.2);
+    }
+    .analog-clock::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #333;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    body.dark-mode .analog-clock::after { background: #fff; }
+    body.red-dark-mode .analog-clock::after { background: #ff0000; }
+    
+    .clock-hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom center;
+      background: #333;
+      border-radius: 6px 6px 0 0;
+    }
+    body.dark-mode .clock-hand { background: #fff; }
+    body.red-dark-mode .clock-hand { background: #ff4444; }
+    
+    .hour-hand {
+      width: 6px;
+      height: 50px;
+      margin-left: -3px;
+    }
+    .minute-hand {
+      width: 4px;
+      height: 70px;
+      margin-left: -2px;
+    }
+    .second-hand {
+      width: 2px;
+      height: 80px;
+      margin-left: -1px;
+      background: #e53935;
+    }
+    body.dark-mode .second-hand { background: #ff5252; }
+    body.red-dark-mode .second-hand { background: #ff0000; }
+    
+    .clock-number {
+      position: absolute;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+    body.dark-mode .clock-number { color: #fff; }
+    body.red-dark-mode .clock-number { color: #ff6666; }
+    
+    .clock-number.n12 { top: 10px; left: 50%; transform: translateX(-50%); }
+    .clock-number.n3 { top: 50%; right: 10px; transform: translateY(-50%); }
+    .clock-number.n6 { bottom: 10px; left: 50%; transform: translateX(-50%); }
+    .clock-number.n9 { top: 50%; left: 10px; transform: translateY(-50%); }
   </style>
 </head>
 <body>
@@ -211,6 +291,7 @@
     <h1>Better インターネット時報</h1>
     <p>
       音声にて<a href="https://www.nict.go.jp/JST/JST5.html" target="_blank">日本標準時(JST)</a>を読み上げます。
+      一部のコードはAI生成を利用しています。
     <br>© 2023 AZO — Licensed under the MIT License. Modified and published by Nosuke.
     </p>
     <div if="app" style="padding: 1rem 0px;">
@@ -247,6 +328,16 @@
         <input id="display_time" type="text" value="" style="font-size: 2em;" readonly />
         <div id="audios" style="display: none;"></div>
       </p>
+      <!-- アナログ時計 -->
+      <div class="analog-clock">
+        <div class="clock-number n12">12</div>
+        <div class="clock-number n3">3</div>
+        <div class="clock-number n6">6</div>
+        <div class="clock-number n9">9</div>
+        <div class="clock-hand hour-hand" id="hourHand"></div>
+        <div class="clock-hand minute-hand" id="minuteHand"></div>
+        <div class="clock-hand second-hand" id="secondHand"></div>
+      </div>
     </div>
     <p>
       ページを開いた時にデバイスとJSTの誤差を取得し、<br>
