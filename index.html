@@ -180,6 +180,7 @@
     <div if="app" style="padding: 1rem 0px;">
       <p>
         <input id="chk24Hour" type="checkbox"><label for="chk24Hour">24時間制</label>
+        <input id="chkLocalClock" type="checkbox"><label for="chkLocalClock">ローカル時計を使用</label>
         <input id="chkMute" type="checkbox"><label for="chkMute">無音</label>
         <input id="chkStop" type="checkbox"><label for="chkStop">一時停止（目押し練習用）</label><br>
         <input id="rdoGoogle" type="radio" name="nmbVoice"><label for="rdoGoogle">「Google」</label>
@@ -201,15 +202,16 @@
     <p>
       URLにパラメータを指定することで、<br>
       初期状態を変更できます。<br>
-      例： https://.../timesignal/?h=24&v=1&vol=50&theme=dark<br>
-      （24時間制+「ゆっくり」声+音量50+ダークモード）<br>
+  例： https://.../timesignal/?h=24&v=1&vol=50&theme=dark&src=local<br>
+  （24時間制+「ゆっくり」声+音量50+ダークモード+ローカル時計）<br>
     </p>
     <p>
       h=24： 24時間制（指定なしで12時間制）<br>
       v=1： 1は「ゆっくり」、2は「ずんだもん」、（指定なしで「Google」）<br>
       m=1： 1は無音（指定なしで音あり）<br>
       vol=100： 音量0〜100（指定なしで100）<br>
-      theme=light/dark/red： テーマ（light=ライト、dark=ダーク、red=レッドダーク）
+      theme=light/dark/red： テーマ（light=ライト、dark=ダーク、red=レッドダーク）<br>
+      src=local/net： 時計ソース（local=ローカル時計, net=NICT補正）
     </p>
     <p>
     ©Google / ©アクエスト / ©VOICEVOX:ずんだもん
