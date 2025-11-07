@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	const tick2Param = param.get("tick2");
 	if(tick2Param !== null) {
 		const tick2Val = Number(tick2Param);
-		if(!isNaN(tick2Val) && tick2Val >= 0 && tick2Val < 2) {
+		if(!isNaN(tick2Val) && tick2Val >= 0 && tick2Val < 3) {
 			options.nTick2 = tick2Val;
 			if(selTick2) selTick2.value = String(tick2Val);
 		}

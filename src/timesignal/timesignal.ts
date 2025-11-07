@@ -32,7 +32,10 @@ const TICK_SOUNDS: string[] = [
 
 const TICK2_SOUNDS: string[] = [
   './sound/tick_2/tick_2.opus',
-  './sound/tick_2/click.mp3'  // 将来的に追加可能
+  './sound/tick_2/click.mp3',
+  './sound/tick_2/saying_tick_dark_once.mp3' , // 3秒前に1回のみ再生
+	'./sound/tick_2/saying_tick_light_once.mp3',
+	'./sound/tick_2/timer_tick2_once.mp3'
 ];
 
 const CHIME_SOUNDS: string[] = [
@@ -85,9 +88,12 @@ export default class Timesignal {
 		this._tick.preload = 'auto';
 		mountpoint.appendChild(this._tick);
 		// チック2
-		this._tick2.src = TICK2_SOUNDS[tick2Index] || TICK2_SOUNDS[0];
+		const tick2Src = TICK2_SOUNDS[tick2Index] || TICK2_SOUNDS[0];
+		this._tick2.src = tick2Src;
 		this._tick2.preload = 'auto';
 		mountpoint.appendChild(this._tick2);
+		// _once が含まれる場合は1回のみモード
+		this._tick2IsOnce = tick2Src.includes('_once');
 		// チャイム
 		this._chime.src = CHIME_SOUNDS[chimeIndex] || CHIME_SOUNDS[0];
 		this._chime.preload = 'auto';
@@ -110,8 +116,12 @@ export default class Timesignal {
 
 		// 新しい音源をセット
 		this._tick.src = TICK_SOUNDS[tickIndex] || TICK_SOUNDS[0];
-		this._tick2.src = TICK2_SOUNDS[tick2Index] || TICK2_SOUNDS[0];
+		const tick2Src = TICK2_SOUNDS[tick2Index] || TICK2_SOUNDS[0];
+		this._tick2.src = tick2Src;
 		this._chime.src = CHIME_SOUNDS[chimeIndex] || CHIME_SOUNDS[0];
+		
+		// _once が含まれる場合は1回のみモード
+		this._tick2IsOnce = tick2Src.includes('_once');
 
 		// プリロード再実行（即座に新しい音源を読み込む）
 		this._tick.load();
@@ -136,15 +146,25 @@ export default class Timesignal {
 		if(mstime >= this._nexttick) {
 			let s = date.getSeconds();
 			// チック
-			switch(s) {
-				case 57:
-				case 58:
-				case 59:
+			if(this._tick2IsOnce) {
+				// _once モード: 57秒のみTick2を再生
+				if(s === 57) {
 					this._playel(this._tick2);
-					break;
-				default:
+				} else if(s !== 58 && s !== 59) {
 					this._playel(this._tick);
-					break;
+				}
+			} else {
+				// 通常モード: 57, 58, 59秒でTick2を再生
+				switch(s) {
+					case 57:
+					case 58:
+					case 59:
+						this._playel(this._tick2);
+						break;
+					default:
+						this._playel(this._tick);
+						break;
+				}
 			}
 			// チャイム
 			if(s % 10 === 0) {
@@ -270,6 +290,8 @@ export default class Timesignal {
 	private _tick: HTMLAudioElement = <HTMLAudioElement>document.createElement('audio');
 	private _tick2: HTMLAudioElement = <HTMLAudioElement>document.createElement('audio');
 	private _chime: HTMLAudioElement = <HTMLAudioElement>document.createElement('audio');
+	
+	private _tick2IsOnce: boolean = false; // Tick2が1回のみ再生モードかどうか
 
 	private _nexttick = 0;
 	private _nextcall = 0;
