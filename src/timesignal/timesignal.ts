@@ -27,17 +27,19 @@ type callback = (strTime: string) => void;
 // 音源選択肢定義
 const TICK_SOUNDS: string[] = [
   './sound/tick/tick.opus',
-  './sound/tick.'  // 将来的に追加可能
+  './sound/tick/wood.mp3'  // 将来的に追加可能
 ];
 
 const TICK2_SOUNDS: string[] = [
   './sound/tick_2/tick_2.opus',
-  './sound/tick_2.'  // 将来的に追加可能
+  './sound/tick_2/click.mp3'  // 将来的に追加可能
 ];
 
 const CHIME_SOUNDS: string[] = [
   './sound/chime/chime.opus',
-  './sound/chime.'  // 将来的に追加可能
+  './sound/chime/clock_chime.mp3',  // 将来的に追加可能
+	'./sound/chime/cuckoo_chime.mp3',
+	'./sound/chime/dark_chime.mp3'
 ];
 
 // インターネット時報
