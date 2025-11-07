@@ -36,7 +36,7 @@ const TICK2_SOUNDS: string[] = [
   './sound/tick_2/saying_tick_dark_once.mp3' , // 3秒前に1回のみ再生
 	'./sound/tick_2/saying_tick_light_once.mp3',
 	'./sound/tick_2/timer_tick2_once.mp3',
-	'./sound/tick_2/comingsomething_once.mp3'
+	'./sound/tick_2/coming_something_once.mp3'
 ];
 
 const CHIME_SOUNDS: string[] = [
