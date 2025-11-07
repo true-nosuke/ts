@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>インターネット時報</title>
+  <title>Better インターネット時報</title>
   <meta name="description" content="日本標準時(JST, GMT+9:00)を音声でお知らせする時報サービスです。">
   <meta name="keywords" content="HTML,JavaScript,audio,音声,しゃべる,読み上げ,お知らせ,時報,現在,時刻,リアルタイム,Web,ネット,japan,japanese,timesignal,無料">
   <meta name="author" content="AZO">
@@ -26,33 +26,7 @@
   <link rel="canonical" href="https://azo234.github.io/timesignal/">
   <link rel="icon" href="./icons/clock16.ico" type="image/x-icon">
   <link rel="shortcut icon" href="./icons/clock32.ico" type="image/x-icon">
-  <script type="application/ld+json">
-    {
-      "@context": "https://azo234.github.io/timesignal/",
-      "@type": "WebPage",
-      "name": "インターネット時報",
-      "description": "日本標準時(JST, GMT+9:00)を音声でお知らせする時報サービスです。",
-      "author": {
-        "@type": "Person",
-        "name": "AZO",
-        "alternateName": "AZO234",
-        "url": "https://domisan.sakura.ne.jp/",
-        "sameAs": [
-          "https://x.com/AZO234"
-        ]
-      },
-      "image": {
-        "@type": "ImageObject",
-        "url": "/icons/clock.png",
-        "height": 512,
-        "width": 512
-      }
-    }
-  </script>
-  <meta name="google-site-verification" content="vQ72AZEoAEYMS0ESnwraapBNwymn9um_hb7upCM2r8w" />
   <meta name="msvalidate.01" content="1048F383E1C3CEED17CE0D496934A81B" />
-  <meta name="robots" content="index, follow">
-  <meta name="googlebot" content="index, follow">
   <style>
     /* ライトモード（デフォルト） */
     body {
@@ -139,25 +113,97 @@
     .theme-btn.light {
       background-color: #ffffff;
       color: #000000;
-      border: 5px solid #ccc;
+      border: 3px solid #ccc;
     }
 
     .theme-btn.dark {
       background-color: #1a1a1a;
       color: #e0e0e0;
-      border: 5px solid #444;
+      border: 3px solid #444;
     }
 
     .theme-btn.red {
       background-color: #0d0000;
       color: #ff6666;
-      border: 5px solid #440000;
+      border: 3px solid #440000;
     }
 
     .theme-btn.active {
       font-weight: bold;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     }
+
+    /* 無音トグル（見やすい大型スイッチ） */
+    .mute-toggle {
+      position: relative;
+      display: inline-block;
+      width: 80px;
+      height: 36px;
+      margin: 0 8px;
+      vertical-align: middle;
+    }
+    .mute-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .mute-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #e0e0e0;
+      border: 2px solid #bdbdbd;
+      transition: .2s;
+      border-radius: 999px;
+      box-sizing: border-box;
+    }
+    .mute-slider:before {
+      position: absolute;
+      content: "";
+      height: 28px;
+      width: 28px;
+      left: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: .2s;
+    }
+    /* ON=無音 */
+    #chkMute:checked + .mute-slider {
+      background-color: #ff5252;
+      border-color: #e53935;
+    }
+    #chkMute:checked + .mute-slider:before {
+      transform: translate(40px, -50%);
+      background-color: #fff5f5;
+    }
+    /* テーマ連動（ダーク） */
+    body.dark-mode .mute-slider { background-color: #424242; border-color: #616161; }
+    body.dark-mode #chkMute:checked + .mute-slider { background-color: #d32f2f; border-color: #b71c1c; }
+    /* テーマ連動（レッドダーク） */
+    body.red-dark-mode .mute-slider { background-color: #2a0000; border-color: #440000; }
+    body.red-dark-mode #chkMute:checked + .mute-slider { background-color: #b71c1c; border-color: #7f0000; }
+
+    /* 無音状態バッジ */
+    .mute-state {
+      display: inline-block;
+      min-width: 40px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-align: center;
+      vertical-align: middle;
+      border: 1px solid #ccc;
+    }
+    .mute-on { background-color: #ffe5e5; color: #c62828; border-color: #ef9a9a; }
+    .mute-off { background-color: #e8f5e9; color: #1b5e20; border-color: #a5d6a7; }
+    body.dark-mode .mute-on { background-color: #3b1b1b; color: #ff9999; border-color: #6e2c2c; }
+    body.dark-mode .mute-off { background-color: #1b3b1d; color: #a5d6a7; border-color: #2e7d32; }
+    body.red-dark-mode .mute-on { background-color: #2a0000; color: #ff8080; border-color: #7f0000; }
+    body.red-dark-mode .mute-off { background-color: #160000; color: #ffb3b3; border-color: #330000; }
   </style>
 </head>
 <body>
@@ -166,22 +212,23 @@
     <button id="btnLight" class="theme-btn light active" title="ライトモード">☀️</button>
     <button id="btnDark" class="theme-btn dark" title="ダークモード">🌙</button>
     <button id="btnRed" class="theme-btn red" title="レッドダークモード（星観測用）">⭐</button>
+            <label class="mute-toggle" title="無音切り替え">
+          <input id="chkMute" type="checkbox">
+          <span class="mute-slider"></span>
+        </label>
+        <span id="lblMuteState" class="mute-state">音あり</span>
   </div>
 
   <div>
-    <h1>インターネット時報</h1>
+    <h1>Better インターネット時報</h1>
     <p>
       音声にて<a href="https://www.nict.go.jp/JST/JST5.html" target="_blank">日本標準時(JST)</a>を読み上げます。
-    </p>
-    <p>
-      ブラウザのオートミュートが有効の場合は、<br>
-      この画面を一度クリックしてください。
     </p>
     <div if="app" style="padding: 1rem 0px;">
       <p>
         <input id="chk24Hour" type="checkbox"><label for="chk24Hour">24時間制</label>
-        <input id="chkLocalClock" type="checkbox"><label for="chkLocalClock">ローカル時計を使用</label>
-        <input id="chkMute" type="checkbox"><label for="chkMute">無音</label>
+       <!-- <input id="chkLocalClock" type="checkbox"><label for="chkLocalClock">ローカル時計を使用</label>-->
+
         <input id="chkStop" type="checkbox"><label for="chkStop">一時停止（目押し練習用）</label><br>
         <input id="rdoGoogle" type="radio" name="nmbVoice"><label for="rdoGoogle">「Google」</label>
         <input id="rdoYukkuri" type="radio" name="nmbVoice"><label for="rdoYukkuri">「ゆっくり」</label>
@@ -228,6 +275,8 @@
       const btnLight = document.getElementById('btnLight');
       const btnDark = document.getElementById('btnDark');
       const btnRed = document.getElementById('btnRed');
+  const chkMute = /** @type {HTMLInputElement|null} */ (document.getElementById('chkMute'));
+      const lblMuteState = document.getElementById('lblMuteState');
 
       // LocalStorageからテーマを復元
       const savedTheme = localStorage.getItem('theme') || 'light';
@@ -266,6 +315,26 @@
       const themeParam = params.get('theme');
       if (themeParam && ['light', 'dark', 'red'].includes(themeParam)) {
         applyTheme(themeParam);
+      }
+
+      // 無音表示更新関数
+      function updateMuteBadge() {
+        if(!chkMute || !lblMuteState) return;
+        if(chkMute.checked) {
+          lblMuteState.textContent = '無音';
+          lblMuteState.classList.remove('mute-off');
+          lblMuteState.classList.add('mute-on');
+        } else {
+          lblMuteState.textContent = '音あり';
+          lblMuteState.classList.remove('mute-on');
+          lblMuteState.classList.add('mute-off');
+        }
+      }
+      // 初期設定
+      updateMuteBadge();
+      // 変更監視
+      if(chkMute) {
+        chkMute.addEventListener('change', updateMuteBadge);
       }
     })();
   </script>
