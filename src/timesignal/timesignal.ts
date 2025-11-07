@@ -220,13 +220,21 @@ export default class Timesignal {
 		const prevTick2 = this._options.nTick2;
 		const prevChime = this._options.nChime;
 		
-		this._options = options;
-		this._tick.volume = options.nVolume / 100.0;
-		this._tick2.volume = options.nVolume / 100.0;
-		this._chime.volume = options.nVolume / 100.0;
+		// オプションをマージ（既存の音源設定を保持）
+		this._options = {
+			...this._options,
+			...options,
+			nTick: options.nTick ?? this._options.nTick ?? 0,
+			nTick2: options.nTick2 ?? this._options.nTick2 ?? 0,
+			nChime: options.nChime ?? this._options.nChime ?? 0
+		};
+		
+		this._tick.volume = this._options.nVolume / 100.0;
+		this._tick2.volume = this._options.nVolume / 100.0;
+		this._chime.volume = this._options.nVolume / 100.0;
 		
 		// いずれかの音源が変更された場合は再読み込み
-		if (prevTick !== options.nTick || prevTick2 !== options.nTick2 || prevChime !== options.nChime) {
+		if (prevTick !== this._options.nTick || prevTick2 !== this._options.nTick2 || prevChime !== this._options.nChime) {
 			this._reloadSounds();
 		}
 
