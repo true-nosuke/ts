@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const rdoYukkuri = <HTMLInputElement>document.getElementById('rdoYukkuri');
   const rdoZunda = <HTMLInputElement>document.getElementById('rdoZunda');
 	const chkLocalClock = <HTMLInputElement>document.getElementById('chkLocalClock');
+	const selTick = <HTMLSelectElement>document.getElementById('selTick');
+	const selTick2 = <HTMLSelectElement>document.getElementById('selTick2');
+	const selChime = <HTMLSelectElement>document.getElementById('selChime');
 
 	const edtDisplayTime = <HTMLInputElement>document.getElementById('display_time');
   const divAudios = <HTMLDivElement>document.getElementById('audios');
@@ -28,7 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
 		nVoice: 0,
 		nVolume: 100,
 		nInterval: 9,
-		useLocalClock: false
+		useLocalClock: false,
+		nTick: 0,
+		nTick2: 0,
+		nChime: 0
 	};
 	const param = new Map();
 	const pair = location.search.substring(1).split('&');
@@ -74,6 +80,35 @@ document.addEventListener('DOMContentLoaded', function () {
 		// 既定: ネットワーク補正（チェックなし）
 		if(chkLocalClock) chkLocalClock.checked = false;
 	}
+
+	// 音源選択（tick=0|1, tick2=0|1, chime=0|1）
+	const tickParam = param.get("tick");
+	if(tickParam !== null) {
+		const tickVal = Number(tickParam);
+		if(!isNaN(tickVal) && tickVal >= 0 && tickVal < 2) {
+			options.nTick = tickVal;
+			if(selTick) selTick.value = String(tickVal);
+		}
+	}
+
+	const tick2Param = param.get("tick2");
+	if(tick2Param !== null) {
+		const tick2Val = Number(tick2Param);
+		if(!isNaN(tick2Val) && tick2Val >= 0 && tick2Val < 2) {
+			options.nTick2 = tick2Val;
+			if(selTick2) selTick2.value = String(tick2Val);
+		}
+	}
+
+	const chimeParam = param.get("chime");
+	if(chimeParam !== null) {
+		const chimeVal = Number(chimeParam);
+		if(!isNaN(chimeVal) && chimeVal >= 0 && chimeVal < 2) {
+			options.nChime = chimeVal;
+			if(selChime) selChime.value = String(chimeVal);
+		}
+	}
+
 	let volume = Number(param.get("vol"));
 	if(isNaN(volume)) {
 		volume = 100;
@@ -135,6 +170,37 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		});
 	}
+
+	// Tick音源選択
+	if(selTick) {
+		selTick.addEventListener('change', function () {
+			options.nTick = Number(selTick.value);
+			if(timesignal) {
+				timesignal.options = options;
+			}
+		});
+	}
+
+	// Tick2音源選択
+	if(selTick2) {
+		selTick2.addEventListener('change', function () {
+			options.nTick2 = Number(selTick2.value);
+			if(timesignal) {
+				timesignal.options = options;
+			}
+		});
+	}
+
+	// Chime音源選択
+	if(selChime) {
+		selChime.addEventListener('change', function () {
+			options.nChime = Number(selChime.value);
+			if(timesignal) {
+				timesignal.options = options;
+			}
+		});
+	}
+
 	rngVolume.addEventListener('change', function() {
 		txtVolume.value = rngVolume.value;
 		options.nVolume = Number(rngVolume.value);

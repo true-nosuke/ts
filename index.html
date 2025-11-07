@@ -229,10 +229,28 @@
         <input id="chk24Hour" type="checkbox"><label for="chk24Hour">24時間制</label>
        <!-- <input id="chkLocalClock" type="checkbox"><label for="chkLocalClock">ローカル時計を使用</label>-->
 
-        <input id="chkStop" type="checkbox"><label for="chkStop">一時停止（目押し練習用）</label><br>
+        <input id="chkStop" type="checkbox"><label for="chkStop">一時停止(目押し練習用)</label><br>
         <input id="rdoGoogle" type="radio" name="nmbVoice"><label for="rdoGoogle">「Google」</label>
         <input id="rdoYukkuri" type="radio" name="nmbVoice"><label for="rdoYukkuri">「ゆっくり」</label>
         <input id="rdoZunda" type="radio" name="nmbVoice"><label for="rdoZunda">「ずんだもん」</label><br>
+        <strong>ティック(通常)音源:</strong>
+        <select id="selTick">
+          <option value="0">デフォルト</option>
+          <option value="1">木.mp3</option>
+        </select>
+        <strong>ティック(3秒前)音源:</strong>
+        <select id="selTick2">
+          <option value="0">デフォルト</option>
+          <option value="1">クリック.mp3</option>
+        </select>
+        <strong>チャイム音源:</strong>
+        <select id="selChime">
+          <option value="0">デフォルト</option>
+          <option value="1">爆発.mp3</option>
+          <option value="2">時計の鐘.mp3</option>
+          <option value="3">鳩時計.mp3</option>
+          <option value="4">悪い予感.mp3</option>
+        </select><br>
         <input id="rngVolume" type="range" min="0" max="100">
         <input id="txtVolume" type="text" size="3" style="font-size: 0.7rem;">
       </p>
@@ -249,8 +267,8 @@
     <p>
       URLにパラメータを指定することで、<br>
       初期状態を変更できます。<br>
-  例： https://.../timesignal/?h=24&v=1&vol=50&theme=dark&src=local<br>
-  （24時間制+「ゆっくり」声+音量50+ダークモード+ローカル時計）<br>
+  例： https://.../timesignal/?h=24&v=1&vol=50&theme=dark&tick=0&tick2=0&chime=1<br>
+  （24時間制+「ゆっくり」声+音量50+ダークモード+Tick/Tick2=Opus、Chime=MP3）<br>
     </p>
     <p>
       h=24： 24時間制（指定なしで12時間制）<br>
@@ -258,7 +276,9 @@
       m=1： 1は無音（指定なしで音あり）<br>
       vol=100： 音量0〜100（指定なしで100）<br>
       theme=light/dark/red： テーマ（light=ライト、dark=ダーク、red=レッドダーク）<br>
-      src=local/net： 時計ソース（local=ローカル時計, net=NICT補正）
+      tick=0/1： Tick音源（0=Opus、1=Opus）<br>
+      tick2=0/1： Tick2音源（0=Opus、1=Opus）<br>
+      chime=0/1： Chime音源（0=Opus、1=MP3）
     </p>
     <p>
     ©Google / ©アクエスト / ©VOICEVOX:ずんだもん

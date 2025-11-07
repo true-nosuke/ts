@@ -16,26 +16,43 @@ export interface timesignalOptions {
 	nVolume: number;  // 音量 0〜100
 	nInterval: number;  // インターバル（ms） 10ms付近推奨
   useLocalClock?: boolean; // ローカル(OS)時計を使用（既定: false=ネットワーク補正）
+  nTick?: number;  // tick音源選択（0〜）
+  nTick2?: number;  // tick2音源選択（0〜）
+  nChime?: number;  // chime音源選択（0〜）
 }
 
 // コールバック関数の型
 type callback = (strTime: string) => void;
 
+// 音源選択肢定義
+const TICK_SOUNDS: string[] = [
+  './sound/tick/tick.opus',
+  './sound/tick.'  // 将来的に追加可能
+];
+
+const TICK2_SOUNDS: string[] = [
+  './sound/tick_2/tick_2.opus',
+  './sound/tick_2.'  // 将来的に追加可能
+];
+
+const CHIME_SOUNDS: string[] = [
+  './sound/chime/chime.opus',
+  './sound/chime.'  // 将来的に追加可能
+];
+
 // インターネット時報
 export default class Timesignal {
 	constructor(mountpoint: HTMLDivElement, options: timesignalOptions, callback: callback) {
-		// チック
-		this._tick.src = './sound/tick.opus';
-		this._tick.preload = 'auto';
-		mountpoint.appendChild(this._tick);
-		// チック2
-		this._tick2.src = './sound/tick_2.opus';
-		this._tick2.preload = 'auto';
-		mountpoint.appendChild(this._tick2);
-		// チャイム
-		this._chime.src = './sound/boom.mp3';
-		this._chime.preload = 'auto';
-		mountpoint.appendChild(this._chime);
+		// オプションを格納（音源読み込み前に必要）
+		this._options = { 
+			...options, 
+			nTick: options.nTick ?? 0,
+			nTick2: options.nTick2 ?? 0,
+			nChime: options.nChime ?? 0
+		};
+
+		// 音源をセット
+		this._loadSounds(mountpoint);
 
 		// 音声エレメントを書き出す
 		for(const voiceSets of this._voiceSets) {
@@ -47,14 +64,47 @@ export default class Timesignal {
     // 時刻文字列を出力するコールバック関数を格納
 		this._callback = callback;
 
-		// オプションを格納
-		this.options = options;
-
     // getjstクラスを初期化
 		this._getjst = new getjst();
 
     // インターバル開始
 		this._interval();
+	}
+
+	// 音源を読み込む
+	private _loadSounds(mountpoint: HTMLDivElement): void {
+		const tickIndex = this._options.nTick ?? 0;
+		const tick2Index = this._options.nTick2 ?? 0;
+		const chimeIndex = this._options.nChime ?? 0;
+
+		// チック
+		this._tick.src = TICK_SOUNDS[tickIndex] || TICK_SOUNDS[0];
+		this._tick.preload = 'auto';
+		mountpoint.appendChild(this._tick);
+		// チック2
+		this._tick2.src = TICK2_SOUNDS[tick2Index] || TICK2_SOUNDS[0];
+		this._tick2.preload = 'auto';
+		mountpoint.appendChild(this._tick2);
+		// チャイム
+		this._chime.src = CHIME_SOUNDS[chimeIndex] || CHIME_SOUNDS[0];
+		this._chime.preload = 'auto';
+		mountpoint.appendChild(this._chime);
+	}
+
+	// 音源を再読み込み
+	private _reloadSounds(): void {
+		const tickIndex = this._options.nTick ?? 0;
+		const tick2Index = this._options.nTick2 ?? 0;
+		const chimeIndex = this._options.nChime ?? 0;
+
+		this._tick.src = TICK_SOUNDS[tickIndex] || TICK_SOUNDS[0];
+		this._tick2.src = TICK2_SOUNDS[tick2Index] || TICK2_SOUNDS[0];
+		this._chime.src = CHIME_SOUNDS[chimeIndex] || CHIME_SOUNDS[0];
+
+		// プリロード再実行
+		this._tick.load();
+		this._tick2.load();
+		this._chime.load();
 	}
 
 	// インターバル
@@ -150,10 +200,20 @@ export default class Timesignal {
 	}
 
   set options(options: timesignalOptions) {
+		const prevTick = this._options.nTick;
+		const prevTick2 = this._options.nTick2;
+		const prevChime = this._options.nChime;
+		
 		this._options = options;
 		this._tick.volume = options.nVolume / 100.0;
 		this._tick2.volume = options.nVolume / 100.0;
 		this._chime.volume = options.nVolume / 100.0;
+		
+		// いずれかの音源が変更された場合は再読み込み
+		if (prevTick !== options.nTick || prevTick2 !== options.nTick2 || prevChime !== options.nChime) {
+			this._reloadSounds();
+		}
+
 		for(const voiceSet of this._voiceSets) {
 			voiceSet.settings = {
 				b24Hour: this._options.b24Hour,
@@ -171,7 +231,10 @@ export default class Timesignal {
 		nVoice: 0,
 		nVolume: 100,
 		nInterval: 9,
-		useLocalClock: false
+		useLocalClock: false,
+		nTick: 0,
+		nTick2: 0,
+		nChime: 0
 	};
 	private _voiceSets: TimesignalVoiceSet[] = [
 		new tsvGoogle(),
