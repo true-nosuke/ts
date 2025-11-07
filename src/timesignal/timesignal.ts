@@ -99,11 +99,20 @@ export default class Timesignal {
 		const tick2Index = this._options.nTick2 ?? 0;
 		const chimeIndex = this._options.nChime ?? 0;
 
+		// 再生中の音声を停止
+		this._tick.pause();
+		this._tick.currentTime = 0;
+		this._tick2.pause();
+		this._tick2.currentTime = 0;
+		this._chime.pause();
+		this._chime.currentTime = 0;
+
+		// 新しい音源をセット
 		this._tick.src = TICK_SOUNDS[tickIndex] || TICK_SOUNDS[0];
 		this._tick2.src = TICK2_SOUNDS[tick2Index] || TICK2_SOUNDS[0];
 		this._chime.src = CHIME_SOUNDS[chimeIndex] || CHIME_SOUNDS[0];
 
-		// プリロード再実行
+		// プリロード再実行（即座に新しい音源を読み込む）
 		this._tick.load();
 		this._tick2.load();
 		this._chime.load();
@@ -197,6 +206,11 @@ export default class Timesignal {
 	private _playel(audio: HTMLAudioElement): void {
 		if(!this._options.bMute) {
 			audio.volume = this._options.nVolume / 100.0;
+			// 再生中の場合は停止してリセット（Tick/Tick2が正しい間隔で鳴るように）
+			if(!audio.paused) {
+				audio.pause();
+				audio.currentTime = 0;
+			}
 			audio.play();
 		}
 	}

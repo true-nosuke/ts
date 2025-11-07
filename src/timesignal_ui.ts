@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	const chimeParam = param.get("chime");
 	if(chimeParam !== null) {
 		const chimeVal = Number(chimeParam);
-		if(!isNaN(chimeVal) && chimeVal >= 0 && chimeVal < 2) {
+		if(!isNaN(chimeVal) && chimeVal >= 0 && chimeVal < 5) {
 			options.nChime = chimeVal;
 			if(selChime) selChime.value = String(chimeVal);
 		}
