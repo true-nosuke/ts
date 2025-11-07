@@ -37,6 +37,7 @@ const TICK2_SOUNDS: string[] = [
 
 const CHIME_SOUNDS: string[] = [
   './sound/chime/chime.opus',
+	'./sound/chime/boom.mp3', 
   './sound/chime/clock_chime.mp3',  // 将来的に追加可能
 	'./sound/chime/cuckoo_chime.mp3',
 	'./sound/chime/dark_chime.mp3'
