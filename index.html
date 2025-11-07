@@ -53,8 +53,121 @@
   <meta name="msvalidate.01" content="1048F383E1C3CEED17CE0D496934A81B" />
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow">
+  <style>
+    /* ライトモード（デフォルト） */
+    body {
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      transition: background-color 0.3s, color 0.3s;
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    body a {
+      color: #0066cc;
+    }
+
+    body input[type="text"],
+    body input[type="range"],
+    body input[type="checkbox"],
+    body input[type="radio"] {
+      color: #000000;
+    }
+
+    /* ダークモード */
+    body.dark-mode {
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode a {
+      color: #66b3ff;
+    }
+
+    body.dark-mode input[type="text"] {
+      background-color: #2a2a2a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+    }
+
+    /* レッドダークモード（星観測用） */
+    body.red-dark-mode {
+      background-color: #0d0000;
+      color: #ff6666;
+    }
+
+    body.red-dark-mode a {
+      color: #ff9999;
+    }
+
+    body.red-dark-mode input[type="text"] {
+      background-color: #1a0000;
+      color: #ff6666;
+      border: 1px solid #440000;
+    }
+
+    body.red-dark-mode h1,
+    body.red-dark-mode p,
+    body.red-dark-mode label {
+      color: #ff6666;
+    }
+
+    /* テーマ切り替えボタンのスタイル */
+    .theme-switcher {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 5px;
+      z-index: 1000;
+    }
+
+    .theme-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: opacity 0.3s;
+    }
+
+    .theme-btn:hover {
+      opacity: 0.8;
+    }
+
+    .theme-btn.light {
+      background-color: #ffffff;
+      color: #000000;
+      border: 1px solid #ccc;
+    }
+
+    .theme-btn.dark {
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+    }
+
+    .theme-btn.red {
+      background-color: #0d0000;
+      color: #ff6666;
+      border: 1px solid #440000;
+    }
+
+    .theme-btn.active {
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+  </style>
 </head>
-<body style="text-align: center">
+<body>
+  <!-- テーマ切り替えボタン -->
+  <div class="theme-switcher">
+    <button id="btnLight" class="theme-btn light active" title="ライトモード">☀️</button>
+    <button id="btnDark" class="theme-btn dark" title="ダークモード">🌙</button>
+    <button id="btnRed" class="theme-btn red" title="レッドダークモード（星観測用）">⭐</button>
+  </div>
+
   <div>
     <h1>インターネット時報</h1>
     <p>
@@ -88,14 +201,15 @@
     <p>
       URLにパラメータを指定することで、<br>
       初期状態を変更できます。<br>
-      例： https://.../timesignal/?h=24&v=1&vol=50<br>
-      （24時間制+「ゆっくり」声+音量50）<br>
+      例： https://.../timesignal/?h=24&v=1&vol=50&theme=dark<br>
+      （24時間制+「ゆっくり」声+音量50+ダークモード）<br>
     </p>
     <p>
       h=24： 24時間制（指定なしで12時間制）<br>
       v=1： 1は「ゆっくり」、2は「ずんだもん」、（指定なしで「Google」）<br>
       m=1： 1は無音（指定なしで音あり）<br>
-      vol=100： 音量0〜100（指定なしで100）
+      vol=100： 音量0〜100（指定なしで100）<br>
+      theme=light/dark/red： テーマ（light=ライト、dark=ダーク、red=レッドダーク）
     </p>
     <p>
     ©Google / ©アクエスト / ©VOICEVOX:ずんだもん
@@ -104,6 +218,55 @@
 
     </p>
   </div>
+
+  <script>
+    // テーマ切り替え機能
+    (function() {
+      const body = document.body;
+      const btnLight = document.getElementById('btnLight');
+      const btnDark = document.getElementById('btnDark');
+      const btnRed = document.getElementById('btnRed');
+
+      // LocalStorageからテーマを復元
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      applyTheme(savedTheme);
+
+      // テーマ適用関数
+      function applyTheme(theme) {
+        body.className = '';
+        btnLight.classList.remove('active');
+        btnDark.classList.remove('active');
+        btnRed.classList.remove('active');
+
+        switch(theme) {
+          case 'dark':
+            body.classList.add('dark-mode');
+            btnDark.classList.add('active');
+            break;
+          case 'red':
+            body.classList.add('red-dark-mode');
+            btnRed.classList.add('active');
+            break;
+          default:
+            btnLight.classList.add('active');
+        }
+
+        localStorage.setItem('theme', theme);
+      }
+
+      // イベントリスナー
+      btnLight.addEventListener('click', () => applyTheme('light'));
+      btnDark.addEventListener('click', () => applyTheme('dark'));
+      btnRed.addEventListener('click', () => applyTheme('red'));
+
+      // URLパラメータからテーマを設定
+      const params = new URLSearchParams(window.location.search);
+      const themeParam = params.get('theme');
+      if (themeParam && ['light', 'dark', 'red'].includes(themeParam)) {
+        applyTheme(themeParam);
+      }
+    })();
+  </script>
 
   <script type="module" src="./src/timesignal_ui.ts"></script>
 

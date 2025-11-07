@@ -32,7 +32,7 @@ export default class Timesignal {
 		this._tick2.preload = 'auto';
 		mountpoint.appendChild(this._tick2);
 		// チャイム
-		this._chime.src = './sound/chime.opus';
+		this._chime.src = './sound/boom.mp3';
 		this._chime.preload = 'auto';
 		mountpoint.appendChild(this._chime);
 
