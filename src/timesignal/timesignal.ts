@@ -35,7 +35,8 @@ const TICK2_SOUNDS: string[] = [
   './sound/tick_2/click.mp3',
   './sound/tick_2/saying_tick_dark_once.mp3' , // 3秒前に1回のみ再生
 	'./sound/tick_2/saying_tick_light_once.mp3',
-	'./sound/tick_2/timer_tick2_once.mp3'
+	'./sound/tick_2/timer_tick2_once.mp3',
+	'./sound/tick_2/comingsomething_once.mp3'
 ];
 
 const CHIME_SOUNDS: string[] = [
@@ -43,7 +44,8 @@ const CHIME_SOUNDS: string[] = [
 	'./sound/chime/boom.mp3', 
   './sound/chime/clock_chime.mp3',  // 将来的に追加可能
 	'./sound/chime/cuckoo_chime.mp3',
-	'./sound/chime/dark_chime.mp3'
+	'./sound/chime/dark_chime.mp3',
+	'./sound/chime/man_screaming.mp3'
 ];
 
 // インターネット時報
